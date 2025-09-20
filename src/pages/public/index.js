@@ -1,0 +1,6 @@
+export {default as Home} from "./pages/Home"
+export {default as About} from "./pages/About"
+export {default as Programs} from "./pages/Programs"
+export {default as Students} from "./pages/Students"
+export {default as Tournaments} from "./pages/Tournaments"
+export {default as Contact} from "./pages/Contact"
