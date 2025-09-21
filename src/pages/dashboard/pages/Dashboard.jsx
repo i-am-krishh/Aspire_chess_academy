@@ -129,7 +129,17 @@ const Dashboard = () => {
                             recentStudents.map((student) => (
                                 <div key={student._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                     <div className="flex items-center">
-                                        <div className="text-2xl mr-3">{student.image}</div>
+                                        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3 overflow-hidden">
+                                            {student.image && student.image.startsWith('/uploads/') ? (
+                                                <img 
+                                                    src={student.image} 
+                                                    alt={student.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="text-xl text-gray-500">👤</div>
+                                            )}
+                                        </div>
                                         <div>
                                             <p className="font-medium text-gray-900">{student.name}</p>
                                             <p className="text-sm text-gray-600">{student.title}</p>
@@ -171,7 +181,17 @@ const Dashboard = () => {
                                 <div key={tournament._id} className="p-3 bg-gray-50 rounded-lg">
                                     <div className="flex items-center justify-between mb-2">
                                         <h3 className="font-medium text-gray-900">{tournament.name}</h3>
-                                        <span className="text-2xl">{tournament.poster}</span>
+                                        <div className="w-8 h-8 rounded bg-gray-200 flex items-center justify-center overflow-hidden">
+                                            {tournament.poster && tournament.poster.startsWith('/uploads/') ? (
+                                                <img 
+                                                    src={tournament.poster} 
+                                                    alt={tournament.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <Trophy className="h-4 w-4 text-gray-500" />
+                                            )}
+                                        </div>
                                     </div>
                                     <div className="text-sm text-gray-600">
                                         <p>{new Date(tournament.date).toLocaleDateString()} at {tournament.time}</p>
@@ -218,7 +238,7 @@ const Dashboard = () => {
                     </Link>
 
                     <a
-                        href="http://localhost:5174"
+                        href="http://localhost:5173"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"

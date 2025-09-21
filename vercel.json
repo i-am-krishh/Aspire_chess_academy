@@ -1,0 +1,57 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "http://localhost:5000/api/$1"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "http://localhost:5000/uploads/$1"
+    },
+    {
+      "source": "/dashboard/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(about|programs|students|tournaments|contact)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/dashboard/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "src/api/**/*.js": {
+      "maxDuration": 30
+    }
+  }
+}

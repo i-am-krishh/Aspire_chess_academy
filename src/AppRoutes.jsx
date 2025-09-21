@@ -12,6 +12,9 @@ import { Home, About, Programs, Students, Tournaments, Contact } from "./pages/p
 import { Dashboard, Login, Students as AdminStudents, Tournaments as AdminTournaments } from "./pages/dashboard"
 import ProtectedRoute from './pages/dashboard/components/ProtectedRoute'
 
+// Error pages
+import NotFound from './pages/NotFound'
+
 const AppRoutes = () => {
     return (
         <Routes>
@@ -38,6 +41,9 @@ const AppRoutes = () => {
                 <Route path="students" element={<AdminStudents />} />
                 <Route path="tournaments" element={<AdminTournaments />} />
             </Route>
+
+            {/* 404 Not Found - Catch all unmatched routes */}
+            <Route path="*" element={<NotFound />} />
         </Routes>
     )
 }
