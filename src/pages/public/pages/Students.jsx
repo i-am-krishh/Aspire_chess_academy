@@ -10,7 +10,7 @@ import {
   Calendar,
   Target,
 } from "lucide-react";
-import axios from "axios";
+import api from "../../../utils/api";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -23,7 +23,7 @@ const Students = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get("/api/students");
+        const response = await api.get("/api/students");
 
         // Filter only active students for public display
         const activeStudents = response.data.data.filter(

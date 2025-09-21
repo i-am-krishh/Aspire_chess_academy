@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../utils/api'
 import { Users, Trophy, Calendar, TrendingUp, Plus, Eye } from 'lucide-react'
 
 const Dashboard = () => {
@@ -21,10 +21,10 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
         try {
             const [studentsRes, tournamentsRes, recentStudentsRes, upcomingTournamentsRes] = await Promise.all([
-                axios.get('/api/students/admin?limit=1000'),
-                axios.get('/api/tournaments/admin?limit=1000'),
-                axios.get('/api/students/admin?limit=5'),
-                axios.get('/api/tournaments?limit=5')
+                api.get('/api/students/admin?limit=1000'),
+                api.get('/api/tournaments/admin?limit=1000'),
+                api.get('/api/students/admin?limit=5'),
+                api.get('/api/tournaments?limit=5')
             ])
 
             const students = studentsRes.data.data

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
+import api from '../../../utils/api'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
 import { 
@@ -75,7 +75,7 @@ const Tournaments = () => {
 
   const fetchTournaments = async () => {
     try {
-      const response = await axios.get('/api/tournaments/admin', {
+      const response = await api.get('/api/tournaments/admin', {
         params: {
           search: searchTerm,
           status: statusFilter,
@@ -111,12 +111,12 @@ const Tournaments = () => {
       }
 
       if (editingTournament) {
-        await axios.put(`/api/tournaments/${editingTournament._id}`, formData, {
+        await api.put(`/api/tournaments/${editingTournament._id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         toast.success('Tournament updated successfully!')
       } else {
-        await axios.post('/api/tournaments', formData, {
+        await api.post('/api/tournaments', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         toast.success('Tournament created successfully!')
@@ -177,7 +177,7 @@ const Tournaments = () => {
     if (!confirm('Are you sure you want to delete this tournament?')) return
     
     try {
-      await axios.delete(`/api/tournaments/${id}`)
+      await api.delete(`/api/tournaments/${id}`)
       toast.success('Tournament deleted successfully!')
       fetchTournaments()
     } catch (error) {
@@ -187,7 +187,7 @@ const Tournaments = () => {
 
   const toggleStatus = async (id) => {
     try {
-      await axios.patch(`/api/tournaments/${id}/toggle-status`)
+      await api.patch(`/api/tournaments/${id}/toggle-status`)
       toast.success('Tournament status updated!')
       fetchTournaments()
     } catch (error) {
@@ -200,7 +200,7 @@ const Tournaments = () => {
     if (!winner) return
 
     try {
-      await axios.patch(`/api/tournaments/${id}/complete`, { winner })
+      await api.patch(`/api/tournaments/${id}/complete`, { winner })
       toast.success('Tournament marked as completed!')
       fetchTournaments()
     } catch (error) {
@@ -213,7 +213,7 @@ const Tournaments = () => {
     if (newCount === null) return
 
     try {
-      await axios.patch(`/api/tournaments/${id}/participants`, {
+      await api.patch(`/api/tournaments/${id}/participants`, {
         currentParticipants: parseInt(newCount)
       })
       toast.success('Participant count updated!')

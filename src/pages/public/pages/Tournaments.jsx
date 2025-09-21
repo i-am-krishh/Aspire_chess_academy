@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, Trophy, Users, Clock, ExternalLink, Star, Award, X, Grid, List, Eye } from 'lucide-react'
-import axios from 'axios'
+import api from '../../../utils/api'
 
 const Tournaments = () => {
   const [upcomingTournaments, setUpcomingTournaments] = useState([])
@@ -21,13 +21,13 @@ const Tournaments = () => {
         
         console.log('Tournaments: Fetching upcoming tournaments...')
         // Fetch upcoming tournaments
-        const upcomingResponse = await axios.get('/api/tournaments')
+        const upcomingResponse = await api.get('/api/tournaments')
         const upcomingData = upcomingResponse.data.data.filter(tournament => tournament.isActive)
         console.log('Tournaments: Upcoming tournaments:', upcomingData)
         
         console.log('Tournaments: Fetching past tournaments...')
         // Fetch past tournaments with winners
-        const pastResponse = await axios.get('/api/tournaments/past')
+        const pastResponse = await api.get('/api/tournaments/past')
         const pastData = pastResponse.data.data
         console.log('Tournaments: Past tournaments:', pastData)
         
