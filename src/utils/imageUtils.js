@@ -1,5 +1,3 @@
-import React from 'react';
-
 // Utility function to check if an image URL is valid
 export const isValidImageUrl = (imageUrl) => {
     if (!imageUrl) return false;
@@ -31,28 +29,4 @@ export const getImageDisplayUrl = (imageUrl) => {
     }
 
     return null;
-};
-
-// Component for displaying images with fallback
-export const ImageWithFallback = ({
-    src,
-    alt,
-    className,
-    fallbackComponent,
-    onError
-}) => {
-    const imageUrl = getImageDisplayUrl(src);
-
-    if (!isValidImageUrl(src)) {
-        return fallbackComponent || null;
-    }
-
-    return (
-        <img
-            src={imageUrl}
-            alt={alt}
-            className={className}
-            onError={onError}
-        />
-    );
 };
