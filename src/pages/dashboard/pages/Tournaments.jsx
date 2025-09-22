@@ -236,6 +236,16 @@ const Tournaments = () => {
   const handleImageSelect = (event) => {
     const file = event.target.files[0]
     if (file) {
+      // Check file size (500KB = 500 * 1024 bytes = 512000 bytes)
+      const maxSize = 500 * 1024 // 500KB in bytes
+      if (file.size > maxSize) {
+        toast.error('Image size must be less than 500KB. Please choose a smaller image.')
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '' // Clear the input
+        }
+        return
+      }
+
       if (file.type.startsWith('image/')) {
         const reader = new FileReader()
         reader.onload = (e) => {
@@ -245,6 +255,9 @@ const Tournaments = () => {
         reader.readAsDataURL(file)
       } else {
         toast.error('Please select a valid image file')
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '' // Clear the input
+        }
       }
     }
   }
