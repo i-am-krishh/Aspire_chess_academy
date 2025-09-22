@@ -15,6 +15,7 @@ import {
   Camera
 } from 'lucide-react'
 import CropModal from '../../../components/CropModal'
+import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
 
 const Students = () => {
   const [students, setStudents] = useState([])
@@ -147,7 +148,7 @@ const Students = () => {
     })
 
     // Set existing image preview if available
-    if (student.image && student.image.startsWith('/uploads/')) {
+    if (student.image && isValidImageUrl(student.image)) {
       setImagePreview(student.image)
     } else {
       resetImageStates()
@@ -304,7 +305,7 @@ const Students = () => {
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4">
                   <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
-                    {student.image && student.image.startsWith('/uploads/') ? (
+                    {student.image && isValidImageUrl(student.image) ? (
                       <img
                         src={student.image}
                         alt={student.name}
@@ -315,7 +316,7 @@ const Students = () => {
                         }}
                       />
                     ) : null}
-                    <div className={`text-2xl text-gray-400 ${student.image && student.image.startsWith('/uploads/') ? 'hidden' : ''}`}>
+                    <div className={`text-2xl text-gray-400 ${student.image && isValidImageUrl(student.image) ? 'hidden' : ''}`}>
                       👤
                     </div>
                   </div>

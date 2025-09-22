@@ -11,6 +11,7 @@ import {
   Target,
 } from "lucide-react";
 import api from "../../../utils/api";
+import { isValidImageUrl } from "../../../utils/imageUtils.jsx";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -175,8 +176,7 @@ const Students = () => {
                       className="mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-700"
                       whileHover={{ scale: 1.1 }}
                     >
-                      {student.image &&
-                      student.image.startsWith("/uploads/") ? (
+                      {student.image && isValidImageUrl(student.image) ? (
                         <img
                           src={student.image}
                           alt={student.name}

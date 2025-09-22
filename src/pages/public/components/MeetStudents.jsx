@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { GraduationCap, Star, Trophy, Eye, Users } from "lucide-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { isValidImageUrl } from "../../../utils/imageUtils.jsx";
 
 const MeetStudents = ({ setCurrentPage }) => {
   const [featuredStudents, setFeaturedStudents] = useState([]);
@@ -249,7 +250,7 @@ const MeetStudents = ({ setCurrentPage }) => {
                       delay: index * 0.5,
                     }}
                   >
-                    {student.image && student.image.startsWith("/uploads/") ? (
+                    {student.image && isValidImageUrl(student.image) ? (
                       <img
                         src={student.image}
                         alt={student.name}

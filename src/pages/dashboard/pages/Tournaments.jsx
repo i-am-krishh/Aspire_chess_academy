@@ -22,6 +22,7 @@ import {
   Camera
 } from 'lucide-react'
 import CropModal from '../../../components/CropModal'
+import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
 
 const Tournaments = () => {
   const [tournaments, setTournaments] = useState([])
@@ -164,7 +165,7 @@ const Tournaments = () => {
     })
     
     // Set existing poster image preview if available
-    if (tournament.posterImage && tournament.posterImage.startsWith('/uploads/')) {
+    if (tournament.posterImage && isValidImageUrl(tournament.posterImage)) {
       setImagePreview(tournament.posterImage)
     } else {
       resetImageStates()
@@ -368,7 +369,7 @@ const Tournaments = () => {
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4 flex-1">
                   <div className="w-20 h-16 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
-                    {tournament.posterImage && tournament.posterImage.startsWith('/uploads/') ? (
+                    {tournament.posterImage && isValidImageUrl(tournament.posterImage) ? (
                       <img
                         src={tournament.posterImage}
                         alt={tournament.name}
@@ -379,7 +380,7 @@ const Tournaments = () => {
                         }}
                       />
                     ) : null}
-                    <div className={`text-2xl text-gray-400 ${tournament.posterImage && tournament.posterImage.startsWith('/uploads/') ? 'hidden' : ''}`}>
+                    <div className={`text-2xl text-gray-400 ${tournament.posterImage && isValidImageUrl(tournament.posterImage) ? 'hidden' : ''}`}>
                       {tournament.poster || '🏆'}
                     </div>
                   </div>

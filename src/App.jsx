@@ -5,6 +5,9 @@ import { AuthProvider } from './pages/dashboard/contexts/AuthContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import AppRoutes from './AppRoutes'
 
+// Import API test for debugging
+import './utils/apiTest'
+
 function App() {
   return (
     <ErrorBoundary>

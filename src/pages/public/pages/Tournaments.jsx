@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, Trophy, Users, Clock, ExternalLink, Star, Award, X, Grid, List, Eye } from 'lucide-react'
 import api from '../../../utils/api'
+import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
 
 const Tournaments = () => {
   const [upcomingTournaments, setUpcomingTournaments] = useState([])
@@ -120,7 +121,7 @@ const Tournaments = () => {
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-start gap-6">
                 <div className="w-24 h-20 rounded-lg overflow-hidden bg-gray-700 flex items-center justify-center flex-shrink-0">
-                  {tournament.posterImage && tournament.posterImage.startsWith('/uploads/') ? (
+                  {tournament.posterImage && isValidImageUrl(tournament.posterImage) ? (
                     <img
                       src={tournament.posterImage}
                       alt={tournament.name}
@@ -419,7 +420,7 @@ const Tournaments = () => {
                 >
                   {/* Tournament Poster */}
                   <div className="w-full h-48 mb-4 rounded-lg overflow-hidden bg-gray-700 flex items-center justify-center relative group">
-                    {tournament.posterImage && tournament.posterImage.startsWith('/uploads/') ? (
+                    {tournament.posterImage && isValidImageUrl(tournament.posterImage) ? (
                       <img
                         src={tournament.posterImage}
                         alt={tournament.name}
@@ -513,7 +514,7 @@ const Tournaments = () => {
                     {/* Poster */}
                     <div className="col-span-1">
                       <div className="w-12 h-10 rounded overflow-hidden bg-gray-700 flex items-center justify-center">
-                        {tournament.posterImage && tournament.posterImage.startsWith('/uploads/') ? (
+                        {tournament.posterImage && isValidImageUrl(tournament.posterImage) ? (
                           <img
                             src={tournament.posterImage}
                             alt={tournament.name}

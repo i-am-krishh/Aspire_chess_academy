@@ -1,11 +1,17 @@
 import axios from 'axios'
 
+// Determine the correct base URL based on environment
+const baseURL = import.meta.env.MODE === 'production' 
+  ? 'https://aspire-chess-academy-backend.onrender.com'  // Your production backend URL
+  : 'http://localhost:5000';  // Local development
+
+console.log('API Base URL:', baseURL);
+console.log('Environment Mode:', import.meta.env.MODE);
+
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: import.meta.env.PROD 
-    ? 'https://aspire-chess-academy-backend.onrender.com'  // Replace with your actual backend URL
-    : 'http://localhost:5000',
-  timeout: 10000,
+  baseURL,
+  timeout: 30000,  // Increased timeout for production
   headers: {
     'Content-Type': 'application/json'
   }
@@ -29,6 +35,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      method: error.config?.method,
+      data: error.response?.data
+    })
+    
     if (error.response?.status === 401) {
       // Clear token and redirect to login
       localStorage.removeItem('token')

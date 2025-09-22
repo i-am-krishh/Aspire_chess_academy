@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../../utils/api'
 import { Users, Trophy, Calendar, TrendingUp, Plus, Eye } from 'lucide-react'
+import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
 
 const Dashboard = () => {
     const [stats, setStats] = useState({
@@ -130,7 +131,7 @@ const Dashboard = () => {
                                 <div key={student._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                     <div className="flex items-center">
                                         <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3 overflow-hidden">
-                                            {student.image && student.image.startsWith('/uploads/') ? (
+                                            {student.image && isValidImageUrl(student.image) ? (
                                                 <img 
                                                     src={student.image} 
                                                     alt={student.name}
@@ -182,7 +183,7 @@ const Dashboard = () => {
                                     <div className="flex items-center justify-between mb-2">
                                         <h3 className="font-medium text-gray-900">{tournament.name}</h3>
                                         <div className="w-8 h-8 rounded bg-gray-200 flex items-center justify-center overflow-hidden">
-                                            {tournament.poster && tournament.poster.startsWith('/uploads/') ? (
+                                            {tournament.poster && isValidImageUrl(tournament.poster) ? (
                                                 <img 
                                                     src={tournament.poster} 
                                                     alt={tournament.name}
