@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { X, Check, RotateCw } from "lucide-react";
 import Cropper from "react-easy-crop";
+import toast from 'react-hot-toast';
 
 // Custom styles for range sliders
 const sliderStyles = `
@@ -147,14 +148,49 @@ const CropModal = ({
             pixelCrop.height
         );
 
+        // Use compression helper to ensure file size is under limit
+        const maxSize = 500 * 1024; // 500KB
+        return await compressImageToSize(croppedCanvas, maxSize);
+    };
+
+    // Helper function to compress image until it's under size limit
+    const compressImageToSize = async (canvas, maxSize, maxWidth = 1200) => {
+        const qualities = [0.8, 0.7, 0.6, 0.5, 0.4, 0.3];
+        
+        for (let quality of qualities) {
+            const blob = await new Promise((resolve) => {
+                canvas.toBlob(resolve, "image/jpeg", quality);
+            });
+            
+            if (blob && blob.size <= maxSize) {
+                return blob;
+            }
+        }
+        
+        // If still too large, try reducing dimensions
+        const scaledCanvas = document.createElement("canvas");
+        const scaledCtx = scaledCanvas.getContext("2d");
+        
+        const scale = Math.min(maxWidth / canvas.width, maxWidth / canvas.height);
+        scaledCanvas.width = canvas.width * scale;
+        scaledCanvas.height = canvas.height * scale;
+        
+        scaledCtx.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
+        
+        // Try compression again with scaled image
+        for (let quality of qualities) {
+            const blob = await new Promise((resolve) => {
+                scaledCanvas.toBlob(resolve, "image/jpeg", quality);
+            });
+            
+            if (blob && blob.size <= maxSize) {
+                return blob;
+            }
+        }
+        
+        // Return the lowest quality version if nothing else works
         return new Promise((resolve) => {
-            croppedCanvas.toBlob(
-                (file) => {
-                    resolve(file);
-                },
-                "image/jpeg",
-                0.9
-            );
+            scaledCanvas.toBlob(resolve, "image/jpeg", 0.3);
         });
     };
 
@@ -170,11 +206,20 @@ const CropModal = ({
             );
 
             if (croppedImage) {
+                // Final check to ensure image is under 500KB (should be handled by compression)
+                const maxSize = 500 * 1024; // 500KB in bytes
+                if (croppedImage.size > maxSize) {
+                    toast.error('Unable to compress image below 500KB. Please choose a different image or crop a smaller area.');
+                    setIsProcessing(false);
+                    return;
+                }
+
                 onCropComplete(croppedImage);
                 onClose();
             }
         } catch (error) {
             console.error("Error cropping image:", error);
+            toast.error("Error processing image. Please try again.");
         } finally {
             setIsProcessing(false);
         }
