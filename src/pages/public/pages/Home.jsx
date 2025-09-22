@@ -10,8 +10,8 @@ const Home = () => {
 
   const stats = [
     { number: "100+", label: "Active Players", icon: Users, color: "text-cyan-400" },
-    { number: "10+", label: "Rated Players", icon: Trophy, color: "text-purple-400" },
-    { number: "5+", label: "Years Experience", icon: Target, color: "text-cyan-400" },
+    { number: "5+", label: "Rated Players", icon: Trophy, color: "text-purple-400" },
+    { number: "3+", label: "Years Experience", icon: Target, color: "text-cyan-400" },
     { number: "50+", label: "Tournaments Won", icon: Award, color: "text-purple-400" }
   ]
 
@@ -58,7 +58,7 @@ const Home = () => {
   ]
 
   return (
-    <div className="pt-20">
+    <div className="pt-10">
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
         <div className="absolute inset-0 "></div>
@@ -92,7 +92,7 @@ const Home = () => {
             cutting-edge training meets timeless strategy to forge tomorrow's grandmasters.
           </motion.p>
 
-          <motion.div
+          {/* <motion.div
             className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,7 +113,7 @@ const Home = () => {
             >
               Watch Demo
             </motion.button>
-          </motion.div>
+          </motion.div> */}
 
           {/* Stats */}
           <motion.div

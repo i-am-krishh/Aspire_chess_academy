@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import CropModal from '../../../components/CropModal'
 import { isValidImageUrl } from '../../../utils/imageUtils'
+import TournamentCard from '../components/TournamentCard'
 
 const Tournaments = () => {
   const [tournaments, setTournaments] = useState([])
@@ -70,10 +71,6 @@ const Tournaments = () => {
     'Blitz'
   ]
 
-  useEffect(() => {
-    fetchTournaments()
-  }, [searchTerm, statusFilter, categoryFilter])
-
   const fetchTournaments = async () => {
     try {
       const response = await api.get('/api/tournaments/admin', {
@@ -93,6 +90,10 @@ const Tournaments = () => {
     }
   }
 
+  useEffect(() => {
+    fetchTournaments()
+  }, [searchTerm, statusFilter, categoryFilter]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleCreateOrUpdate = async (data) => {
     try {
       console.log('Submitting tournament data:', data)
@@ -105,7 +106,7 @@ const Tournaments = () => {
           formData.append(key, data[key])
         }
       })
-      
+
       // Handle cropped poster image upload
       if (croppedImage) {
         formData.append('posterImage', croppedImage, 'tournament-poster.jpg')
@@ -181,46 +182,22 @@ const Tournaments = () => {
       await api.delete(`/api/tournaments/${id}`)
       toast.success('Tournament deleted successfully!')
       fetchTournaments()
-    } catch (error) {
+    } catch (err) {
+      console.error('Error deleting tournament:', err)
       toast.error('Failed to delete tournament')
     }
   }
 
   const toggleStatus = async (id) => {
+    if (!confirm('Are you sure you want to change the tournament status? This will update its visibility and availability.')) return
+    
     try {
       await api.patch(`/api/tournaments/${id}/toggle-status`)
       toast.success('Tournament status updated!')
       fetchTournaments()
-    } catch (error) {
+    } catch (err) {
+      console.error('Error toggling status:', err)
       toast.error('Failed to update status')
-    }
-  }
-
-  const markCompleted = async (id) => {
-    const winner = prompt('Enter the winner name:')
-    if (!winner) return
-
-    try {
-      await api.patch(`/api/tournaments/${id}/complete`, { winner })
-      toast.success('Tournament marked as completed!')
-      fetchTournaments()
-    } catch (error) {
-      toast.error('Failed to mark tournament as completed')
-    }
-  }
-
-  const updateParticipants = async (id, currentCount) => {
-    const newCount = prompt('Enter new participant count:', currentCount)
-    if (newCount === null) return
-
-    try {
-      await api.patch(`/api/tournaments/${id}/participants`, {
-        currentParticipants: parseInt(newCount)
-      })
-      toast.success('Participant count updated!')
-      fetchTournaments()
-    } catch (error) {
-      toast.error('Failed to update participant count')
     }
   }
 
@@ -264,11 +241,11 @@ const Tournaments = () => {
 
   const handleCropComplete = (croppedImageBlob) => {
     setCroppedImage(croppedImageBlob)
-    
+
     // Create preview URL
     const previewUrl = URL.createObjectURL(croppedImageBlob)
     setImagePreview(previewUrl)
-    
+
     setShowCropModal(false)
     setSelectedImage(null)
   }
@@ -347,10 +324,9 @@ const Tournaments = () => {
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-400" />
+          <div className="flex gap-2">
             <select
-              className="input-field"
+              className="input-field text-sm sm:text-base"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -360,8 +336,9 @@ const Tournaments = () => {
               <option value="completed">Completed</option>
               <option value="cancelled">Cancelled</option>
             </select>
+            
             <select
-              className="input-field"
+              className="input-field text-sm sm:text-base"
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
             >
@@ -375,150 +352,21 @@ const Tournaments = () => {
       </div>
 
       {/* Tournaments List */}
-      <div className="grid gap-6">
+      <div className="grid gap-4 lg:gap-6 px-4 sm:px-0">
         {tournaments.length > 0 ? (
           tournaments.map((tournament) => (
-            <div key={tournament._id} className="card">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-4 flex-1">
-                  <div className="w-20 h-16 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
-                    {tournament.posterImage && isValidImageUrl(tournament.posterImage) ? (
-                      <img
-                        src={tournament.posterImage}
-                        alt={tournament.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none'
-                          e.target.nextSibling.style.display = 'block'
-                        }}
-                      />
-                    ) : null}
-                    <div className={`text-2xl text-gray-400 ${tournament.posterImage && isValidImageUrl(tournament.posterImage) ? 'hidden' : ''}`}>
-                      {tournament.poster || '🏆'}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{tournament.name}</h3>
-                      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(tournament.status)}`}>
-                        {tournament.status}
-                      </span>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        tournament.isActive 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {tournament.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                      <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                        {tournament.category}
-                      </span>
-                    </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-4 mb-3">
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          {format(new Date(tournament.date), 'PPP')} at {tournament.time}
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          {tournament.location}
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Users className="h-4 w-4 mr-2" />
-                          <button
-                            onClick={() => updateParticipants(tournament._id, tournament.currentParticipants)}
-                            className="hover:text-blue-600 cursor-pointer"
-                          >
-                            {tournament.currentParticipants}/{tournament.maxParticipants} participants
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="text-sm">
-                          <span className="text-gray-600">Entry Fee: </span>
-                          <span className="font-medium">{tournament.entryFee}</span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="text-gray-600">Prize Pool: </span>
-                          <span className="font-medium text-green-600">{tournament.prizePool}</span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="text-gray-600">Format: </span>
-                          <span className="font-medium">{tournament.format}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-700 mb-3">{tournament.description}</p>
-                    
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="text-gray-600">
-                        Time Control: {tournament.timeControl}
-                      </span>
-                      <span className="text-gray-600">
-                        List Until: {format(new Date(tournament.listUntil), 'PP')}
-                      </span>
-                      {tournament.winner && (
-                        <span className="text-green-600 font-medium">
-                          Winner: {tournament.winner}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-3">
-                      <a
-                        href={tournament.registrationLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm"
-                      >
-                        <ExternalLink className="h-3 w-3 mr-1" />
-                        Registration Link
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  {tournament.status === 'upcoming' && (
-                    <button
-                      onClick={() => markCompleted(tournament._id)}
-                      className="p-2 text-green-600 hover:text-green-800"
-                      title="Mark as Completed"
-                    >
-                      <CheckCircle className="h-4 w-4" />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => toggleStatus(tournament._id)}
-                    className="p-2 text-gray-400 hover:text-gray-600"
-                    title={tournament.isActive ? 'Deactivate' : 'Activate'}
-                  >
-                    {tournament.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                  <button
-                    onClick={() => handleEdit(tournament)}
-                    className="p-2 text-blue-600 hover:text-blue-800"
-                    title="Edit"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(tournament._id)}
-                    className="p-2 text-red-600 hover:text-red-800"
-                    title="Delete"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <TournamentCard
+              key={tournament._id}
+              tournament={tournament}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onToggleStatus={toggleStatus}
+              getStatusColor={getStatusColor}
+              isValidImageUrl={isValidImageUrl}
+            />
           ))
         ) : (
-          <div className="card text-center py-12">
+          <div className="card text-center py-12 mx-4 sm:mx-0">
             <p className="text-gray-500">No tournaments found</p>
           </div>
         )}
@@ -720,6 +568,41 @@ const Tournaments = () => {
                     )}
                   </div>
 
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Poster Image
+                    </label>
+                    <div className="flex items-center space-x-4">
+                      {imagePreview && (
+                        <div className="w-20 h-16 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                          <img
+                            src={imagePreview}
+                            alt="Poster preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="btn-secondary flex items-center text-sm"
+                        >
+                          <Camera className="h-4 w-4 mr-2" />
+                          {imagePreview ? 'Change Image' : 'Upload Image'}
+                        </button>
+                        <p className="text-xs text-gray-500 mt-1">Max 500KB, JPG/PNG format</p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       List Until *
@@ -736,95 +619,32 @@ const Tournaments = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Poster Emoji (Fallback)
+                      Registration Link *
                     </label>
                     <input
-                      {...register('poster')}
+                      {...register('registrationLink', { required: 'Registration link is required' })}
                       className="input-field"
-                      placeholder="🏆"
+                      placeholder="https://..."
                     />
+                    {errors.registrationLink && (
+                      <p className="text-red-500 text-sm mt-1">{errors.registrationLink.message}</p>
+                    )}
                   </div>
 
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Tournament Poster Image
+                      Description *
                     </label>
-                    <div className="space-y-3">
-                      {/* Image Preview */}
-                      {imagePreview && (
-                        <div className="flex items-center space-x-3">
-                          <img
-                            src={imagePreview}
-                            alt="Tournament poster preview"
-                            className="w-24 h-18 rounded-lg object-cover border-2 border-gray-300"
-                            style={{ aspectRatio: '4/3' }}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setImagePreview(null)
-                              setCroppedImage(null)
-                            }}
-                            className="text-red-600 hover:text-red-800 text-sm"
-                          >
-                            Remove Image
-                          </button>
-                        </div>
-                      )}
-                      
-                      {/* Upload Button */}
-                      <div>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageSelect}
-                          className="hidden"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => fileInputRef.current?.click()}
-                          className="flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                          <Camera className="h-4 w-4 mr-2" />
-                          {imagePreview ? 'Change Poster' : 'Upload Poster'}
-                        </button>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Recommended: 4:3 aspect ratio (e.g., 800x600px)
-                        </p>
-                      </div>
-                    </div>
+                    <textarea
+                      {...register('description', { required: 'Description is required' })}
+                      className="input-field"
+                      rows="4"
+                      placeholder="Tournament description..."
+                    />
+                    {errors.description && (
+                      <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                    )}
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Registration Link *
-                  </label>
-                  <input
-                    type="url"
-                    {...register('registrationLink', { required: 'Registration link is required' })}
-                    className="input-field"
-                    placeholder="https://forms.google.com/..."
-                  />
-                  {errors.registrationLink && (
-                    <p className="text-red-500 text-sm mt-1">{errors.registrationLink.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description *
-                  </label>
-                  <textarea
-                    {...register('description', { required: 'Description is required' })}
-                    className="input-field"
-                    rows="4"
-                    placeholder="Tournament description..."
-                  />
-                  {errors.description && (
-                    <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
-                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
@@ -858,7 +678,7 @@ const Tournaments = () => {
         }}
         imageSrc={selectedImage}
         onCropComplete={handleCropComplete}
-        aspectRatio={4/3} // 4:3 ratio for tournament posters
+        aspectRatio={4/3}
         cropShape="rect"
         title="Crop Tournament Poster"
       />

@@ -317,21 +317,21 @@ const Tournaments = () => {
             <div className="bg-black/50 border border-cyan-500/30 rounded-lg p-4 hover-glow">
               <div className="text-2xl font-orbitron font-bold text-cyan-400 flex items-center justify-center">
                 <Trophy className="w-6 h-6 mr-2" />
-                24+
+                10+
               </div>
               <div className="text-gray-400">Annual Tournaments</div>
             </div>
             <div className="bg-black/50 border border-purple-500/30 rounded-lg p-4 hover-glow">
               <div className="text-2xl font-orbitron font-bold text-purple-400 flex items-center justify-center">
                 <Users className="w-6 h-6 mr-2" />
-                1200+
+                100+
               </div>
               <div className="text-gray-400">Total Participants</div>
             </div>
             <div className="bg-black/50 border border-cyan-500/30 rounded-lg p-4 hover-glow">
               <div className="text-2xl font-orbitron font-bold text-cyan-400 flex items-center justify-center">
                 <Award className="w-6 h-6 mr-2" />
-                $15K+
+                Rs. 5K+
               </div>
               <div className="text-gray-400">Prize Money</div>
             </div>

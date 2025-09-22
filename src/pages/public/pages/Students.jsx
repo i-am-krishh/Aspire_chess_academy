@@ -126,14 +126,14 @@ const Students = () => {
             <div className="hover-glow rounded-lg border border-cyan-500/30 bg-black/50 p-4">
               <div className="font-orbitron flex items-center justify-center text-2xl font-bold text-cyan-400">
                 <Users className="mr-2 h-6 w-6" />
-                500+
+                100+
               </div>
               <div className="text-gray-400">Active Students</div>
             </div>
             <div className="hover-glow rounded-lg border border-purple-500/30 bg-black/50 p-4">
               <div className="font-orbitron flex items-center justify-center text-2xl font-bold text-purple-400">
                 <Trophy className="mr-2 h-6 w-6" />
-                50+
+                5+
               </div>
               <div className="text-gray-400">Titled Players</div>
             </div>
@@ -147,7 +147,7 @@ const Students = () => {
             <div className="hover-glow rounded-lg border border-purple-500/30 bg-black/50 p-4">
               <div className="font-orbitron flex items-center justify-center text-2xl font-bold text-purple-400">
                 <Award className="mr-2 h-6 w-6" />
-                200+
+                50+
               </div>
               <div className="text-gray-400">Tournament Wins</div>
             </div>

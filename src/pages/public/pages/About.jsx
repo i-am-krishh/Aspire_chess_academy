@@ -31,7 +31,7 @@ const About = () => {
       event: "Student Achievements",
       description:
         "Mentored 5 internationally rated players, with numerous victories and podium finishes across inter-school, zonal, and state-level tournaments.",
-    }
+    },
   ];
 
   return (
@@ -118,38 +118,40 @@ const About = () => {
       </section>
 
       {/* History Timeline */}
-      <section className="px-4 py-20">
+      <section className="px-4 py-12 md:py-20">
         <div className="mx-auto max-w-6xl">
-          <h2 className="font-orbitron mb-16 text-center text-4xl font-bold text-white">
+          <h2 className="font-orbitron mb-8 text-center text-2xl font-bold text-white md:mb-16 md:text-4xl">
             OUR <span className="text-cyan-400">JOURNEY</span>
           </h2>
 
           <div className="relative">
             {/* Timeline Line */}
-            <div className="absolute left-1/2 h-full w-1 -translate-x-1/2 transform bg-gradient-to-b from-cyan-400 to-purple-600"></div>
+            <div className="absolute left-1/2 h-full w-0.5 -translate-x-1/2 transform bg-gradient-to-b from-cyan-400 to-purple-600 md:w-1"></div>
 
             {milestones.map((milestone, index) => (
               <div
                 key={index}
-                className={`mb-12 flex items-center ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+                className={`mb-8 flex items-center md:mb-12 ${index % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
               >
                 <div
-                  className={`w-5/12 ${index % 2 === 0 ? "pr-8 text-right" : "pl-8 text-left"}`}
+                  className={`w-5/12 ${index % 2 === 0 ? "pr-3 text-right md:pr-8" : "pl-3 text-left md:pl-8"}`}
                 >
-                  <div className="hover-glow rounded-xl border border-cyan-500/30 bg-black/50 p-6">
-                    <div className="font-orbitron mb-2 text-2xl font-bold text-cyan-400">
+                  <div className="hover-glow rounded-lg border border-cyan-500/30 bg-black/50 p-3 md:rounded-xl md:p-6">
+                    <div className="font-orbitron mb-1 text-sm font-bold text-cyan-400 md:mb-2 md:text-xl lg:text-2xl">
                       {milestone.year}
                     </div>
-                    <h3 className="mb-3 text-xl font-bold text-white">
+                    <h3 className="mb-2 text-xs font-bold text-white md:mb-3 md:text-lg lg:text-xl">
                       {milestone.event}
                     </h3>
-                    <p className="text-gray-300">{milestone.description}</p>
+                    <p className="text-xs leading-relaxed text-gray-300 md:text-sm lg:text-base">
+                      {milestone.description}
+                    </p>
                   </div>
                 </div>
 
                 {/* Timeline Node */}
                 <div className="flex w-2/12 justify-center">
-                  <div className="glow-blue h-6 w-6 rounded-full border-4 border-black bg-gradient-to-r from-cyan-400 to-purple-600"></div>
+                  <div className="glow-blue h-3 w-3 rounded-full border-2 border-black bg-gradient-to-r from-cyan-400 to-purple-600 md:h-6 md:w-6 md:border-4"></div>
                 </div>
 
                 <div className="w-5/12"></div>
@@ -175,21 +177,20 @@ const About = () => {
             <div className="hover-glow rounded-xl border border-purple-500/30 bg-black/50 p-6">
               <div className="mb-4 text-4xl">🖥️</div>
               <h3 className="font-orbitron mb-3 text-xl font-bold text-white">
-                Analysis Lab
+                Digital Lab
               </h3>
               <p className="text-gray-300">
-                High-performance computers running the latest chess engines for
-                deep position analysis
+                We use interactive digital screens to teach and analyze chess
+                positions, making learning more visual, engaging, and effective.
               </p>
             </div>
             <div className="hover-glow rounded-xl border border-cyan-500/30 bg-black/50 p-6">
               <div className="mb-4 text-4xl">🏛️</div>
               <h3 className="font-orbitron mb-3 text-xl font-bold text-white">
-                Tournament Hall
+                Game Room
               </h3>
               <p className="text-gray-300">
-                Professional tournament conditions with DGT boards and live
-                streaming capabilities
+                Fully equipped according to FIDE standards, providing a professional environment for competitive play.
               </p>
             </div>
             <div className="hover-glow rounded-xl border border-purple-500/30 bg-black/50 p-6">

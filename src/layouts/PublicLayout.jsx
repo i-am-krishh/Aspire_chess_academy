@@ -76,7 +76,7 @@ const PublicLayout = () => {
 
       {/* Main Content */}
       <motion.main
-        className="relative z-10 pt-20"
+        className="relative z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

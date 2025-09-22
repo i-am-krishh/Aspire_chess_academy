@@ -24,18 +24,17 @@ const Footer = () => {
     { name: "Contact", href: "/contact" },
   ];
 
-  const programs = [
-    { name: "Beginner Level", href: "/programs#beginner" },
-    { name: "Intermediate", href: "/programs#intermediate" },
-    { name: "Advanced", href: "/programs#advanced" },
-    { name: "Private Coaching", href: "/programs#private" },
-    { name: "Online Classes", href: "/programs#online" },
-  ];
+  // const programs = [
+  //   { name: "Beginner Level", href: "/programs#beginner" },
+  //   { name: "Intermediate", href: "/programs#intermediate" },
+  //   { name: "Advanced", href: "/programs#advanced" },
+  //   { name: "Private Coaching", href: "/programs#private" },
+  //   { name: "Online Classes", href: "/programs#online" },
+  // ];
 
   const socialLinks = [
     { icon: Facebook, href: "#", color: "hover:text-blue-400" },
-    { icon: Twitter, href: "#", color: "hover:text-cyan-400" },
-    { icon: Instagram, href: "#", color: "hover:text-pink-400" },
+    { icon: Instagram, href: "https://www.instagram.com/aspirechess?igsh=MTdmNnpld29pZmVtcQ==", color: "hover:text-pink-400" },
     { icon: Youtube, href: "#", color: "hover:text-red-400" },
   ];
 
@@ -115,7 +114,7 @@ const Footer = () => {
           </motion.div>
 
           {/* Programs */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -139,7 +138,7 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </motion.div> */}
 
           {/* Newsletter & Social */}
           <motion.div
@@ -154,26 +153,7 @@ const Footer = () => {
             </h4>
 
             {/* Newsletter Signup */}
-            <div className="mb-6">
-              <p className="mb-4 text-sm text-gray-300">
-                Subscribe to our newsletter for chess tips, tournament updates,
-                and exclusive content.
-              </p>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 rounded-l-lg border border-gray-600 bg-gray-800/50 px-4 py-2 text-sm text-white focus:border-cyan-400 focus:outline-none"
-                />
-                <motion.button
-                  className="hover-glow rounded-r-lg bg-gradient-to-r from-cyan-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Subscribe
-                </motion.button>
-              </div>
-            </div>
+            
 
             {/* Social Links */}
             <div>
@@ -217,7 +197,7 @@ const Footer = () => {
             </div>
             <div>
               <div className="font-orbitron mb-1 text-2xl font-bold text-purple-400">
-                10+
+                5+
               </div>
               <div className="text-sm text-gray-400">Rated Players</div>
             </div>
@@ -229,7 +209,7 @@ const Footer = () => {
             </div>
             <div>
               <div className="font-orbitron mb-1 text-2xl font-bold text-purple-400">
-                5+
+                3+
               </div>
               <div className="text-sm text-gray-400">Years Excellence</div>
             </div>
@@ -245,7 +225,7 @@ const Footer = () => {
           transition={{ duration: 0.6, delay: 0.5 }}
         >
           <div className="mb-4 md:mb-0">
-            <p>&copy; 2024 Aspire Chess Academy. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Aspire Chess Academy. All rights reserved.</p>
           </div>
           <div className="flex space-x-6">
             <motion.a

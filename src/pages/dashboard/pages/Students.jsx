@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import CropModal from '../../../components/CropModal'
 import { isValidImageUrl } from '../../../utils/imageUtils'
+import StudentCard from '../components/StudentCard'
 
 const Students = () => {
   const [students, setStudents] = useState([])
@@ -53,10 +54,6 @@ const Students = () => {
     }
   }, [showModal])
 
-  useEffect(() => {
-    fetchStudents()
-  }, [searchTerm, statusFilter])
-
   const fetchStudents = async () => {
     try {
       const response = await api.get('/api/students/admin', {
@@ -74,6 +71,10 @@ const Students = () => {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchStudents()
+  }, [searchTerm, statusFilter]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCreateOrUpdate = async (data) => {
     try {
@@ -159,22 +160,26 @@ const Students = () => {
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this student?')) return
-
+    
     try {
       await api.delete(`/api/students/${id}`)
       toast.success('Student deleted successfully!')
       fetchStudents()
-    } catch (error) {
+    } catch (err) {
+      console.error('Error deleting student:', err)
       toast.error('Failed to delete student')
     }
   }
 
   const toggleStatus = async (id) => {
+    if (!confirm('Are you sure you want to toggle this student\'s status?')) return
+
     try {
       await api.patch(`/api/students/${id}/toggle-status`)
       toast.success('Student status updated!')
       fetchStudents()
-    } catch (error) {
+    } catch (err) {
+      console.error('Error toggling status:', err)
       toast.error('Failed to update status')
     }
   }
@@ -264,16 +269,16 @@ const Students = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6 max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 px-4 sm:px-0">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Students Management</h1>
-          <p className="text-gray-600">Manage student testimonials and profiles</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Students Management</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Manage student testimonials and profiles</p>
         </div>
         <button
           onClick={openCreateModal}
-          className="btn-primary flex items-center"
+          className="btn-primary flex items-center justify-center w-full sm:w-auto text-sm sm:text-base py-2 sm:py-3"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Student
@@ -281,24 +286,24 @@ const Students = () => {
       </div>
 
       {/* Filters */}
-      <div className="card">
-        <div className="flex flex-col md:flex-row gap-4">
+      <div className="card mx-4 sm:mx-0 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
                 placeholder="Search students..."
-                className="input-field pl-10"
+                className="w-full px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-400" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Filter className="h-4 w-4 text-gray-400 flex-shrink-0" />
             <select
-              className="input-field"
+              className="input-field text-sm sm:text-base"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -311,95 +316,20 @@ const Students = () => {
       </div>
 
       {/* Students List */}
-      <div className="grid gap-6">
+      <div className="grid gap-4 lg:gap-6 px-4 sm:px-0">
         {students.length > 0 ? (
           students.map((student) => (
-            <div key={student._id} className="card">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
-                    {student.image && isValidImageUrl(student.image) ? (
-                      <img
-                        src={student.image}
-                        alt={student.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none'
-                          e.target.nextSibling.style.display = 'block'
-                        }}
-                      />
-                    ) : null}
-                    <div className={`text-2xl text-gray-400 ${student.image && isValidImageUrl(student.image) ? 'hidden' : ''}`}>
-                      👤
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{student.name}</h3>
-                      <span className={`px-2 py-1 text-xs rounded-full ${student.isActive
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                        }`}>
-                        {student.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                      {student.featured && (
-                        <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
-                          Featured
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-blue-600 font-medium mb-1">{student.title}</p>
-                    <p className="text-gray-600 mb-2">{student.program}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                      <span>Rating: {student.rating}</span>
-                      <span>Peak: {student.peakRating}</span>
-                      <span>Joined: {student.joinDate}</span>
-                    </div>
-                    <p className="text-gray-700 italic">"{student.testimonial}"</p>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-600">{student.bio}</p>
-                    </div>
-                    <div className="mt-3">
-                      <h4 className="text-sm font-medium text-gray-900 mb-1">Achievements:</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        {student.achievements.map((achievement, idx) => (
-                          <li key={idx} className="flex items-start">
-                            <span className="text-blue-500 mr-2">•</span>
-                            {achievement}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => toggleStatus(student._id)}
-                    className="p-2 text-gray-400 hover:text-gray-600"
-                    title={student.isActive ? 'Deactivate' : 'Activate'}
-                  >
-                    {student.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                  <button
-                    onClick={() => handleEdit(student)}
-                    className="p-2 text-blue-600 hover:text-blue-800"
-                    title="Edit"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(student._id)}
-                    className="p-2 text-red-600 hover:text-red-800"
-                    title="Delete"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <StudentCard
+              key={student._id}
+              student={student}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onToggleStatus={toggleStatus}
+              isValidImageUrl={isValidImageUrl}
+            />
           ))
         ) : (
-          <div className="card text-center py-12">
+          <div className="card text-center py-12 mx-4 sm:mx-0">
             <p className="text-gray-500">No students found</p>
           </div>
         )}

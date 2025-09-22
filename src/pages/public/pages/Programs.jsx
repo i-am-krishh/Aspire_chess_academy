@@ -175,7 +175,7 @@ const Programs = () => {
           </p>
 
           {/* Quick Level Guide */}
-          <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-4">
+          {/* <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-4">
             <div className="rounded-lg border border-green-500/30 bg-black/50 p-4">
               <div className="font-bold text-green-400">Beginner</div>
               <div className="text-sm text-gray-400">0-1200 rating</div>
@@ -192,12 +192,12 @@ const Programs = () => {
               <div className="font-bold text-orange-400">Masterclass</div>
               <div className="text-sm text-gray-400">2200+ rating</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
       {/* Programs Grid */}
-      <section className="px-4 py-16">
+      <section className="px-4">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {programs.map((program, index) => (

@@ -134,7 +134,7 @@ const Hero = () => {
         </motion.p>
 
         {/* CTA Buttons */}
-        <motion.div 
+        {/* <motion.div 
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           variants={itemVariants}
         >
@@ -161,7 +161,7 @@ const Hero = () => {
             <Play className="w-5 h-5 mr-2" />
             Watch Demo
           </motion.button>
-        </motion.div>
+        </motion.div> */}
 
         {/* Stats */}
         <motion.div 

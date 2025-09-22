@@ -95,8 +95,8 @@ const Testimonials = () => {
 
   const stats = [
     { number: "95%", label: "Rating Improvement", icon: TrendingUp, color: "text-purple-400", border: "border-purple-500/30" },
-    { number: "50+", label: "Titled Players", icon: Award, color: "text-cyan-400", border: "border-cyan-500/30" },
-    { number: "200+", label: "Tournament Wins", icon: Trophy, color: "text-purple-400", border: "border-purple-500/30" },
+    { number: "100+", label: "Active Players", icon: Award, color: "text-cyan-400", border: "border-cyan-500/30" },
+    { number: "50+", label: "Tournament Wins", icon: Trophy, color: "text-purple-400", border: "border-purple-500/30" },
     { number: "4.9/5", label: "Student Rating", icon: Star, color: "text-cyan-400", border: "border-cyan-500/30" }
   ]
 

@@ -1,13 +1,90 @@
-import React from "react";
+import React, { useState } from "react";
+import api from "../../../utils/api";
+import toast from "react-hot-toast";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    age: '',
+    branch: 'Kalamboli',
+    experience: 'Beginner',
+    preferredProgram: '',
+    message: '',
+    newsletter: false
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      const enrollmentData = {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.phone,
+        branch: formData.branch,
+        age: formData.age ? parseInt(formData.age) : undefined,
+        experience: formData.experience,
+        message: `Goals & Experience: ${formData.message}\nPreferred Program: ${formData.preferredProgram}\nNewsletter: ${formData.newsletter ? 'Yes' : 'No'}`
+      };
+
+      await api.post('/api/enrollments', enrollmentData);
+      
+      toast.success('Enrollment application submitted successfully! We will contact you soon.');
+      
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        age: '',
+        branch: 'Kalamboli',
+        experience: 'Beginner',
+        preferredProgram: '',
+        message: '',
+        newsletter: false
+      });
+      
+    } catch (error) {
+      console.error('Error submitting enrollment:', error);
+      
+      if (error.response?.data?.errors) {
+        error.response.data.errors.forEach(err => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to submit enrollment. Please try again.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const contactInfo = [
     {
       icon: "📞",
       title: "Call Us",
       details: [
-        "+91 98765 43210",
-        "+91 87654 32109",
+        "+91 70391 84939",
         "Mon-Fri: 9AM-8PM IST",
       ],
     },
@@ -83,7 +160,7 @@ const Contact = () => {
                 ENROLLMENT <span className="text-purple-400">FORM</span>
               </h2>
 
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-gray-300">
@@ -91,6 +168,10 @@ const Contact = () => {
                     </label>
                     <input
                       type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      required
                       className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
                       placeholder="Enter your first name"
                     />
@@ -101,6 +182,10 @@ const Contact = () => {
                     </label>
                     <input
                       type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      required
                       className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
                       placeholder="Enter your last name"
                     />
@@ -113,51 +198,97 @@ const Contact = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
                     className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
                     placeholder="your.email@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-gray-300">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
-                    placeholder="+1 (555) 123-4567"
                   />
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-gray-300">
-                      Current Chess Rating
+                      Phone Number *
                     </label>
-                    <select className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white transition-colors focus:border-cyan-400 focus:outline-none">
-                      <option value="">Select rating range</option>
-                      <option value="beginner">Beginner (0-1200)</option>
-                      <option value="intermediate">
-                        Intermediate (1200-1800)
-                      </option>
-                      <option value="advanced">Advanced (1800-2200)</option>
-                      <option value="expert">Expert (2200+)</option>
-                      <option value="unrated">Unrated</option>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
+                      placeholder="1234567890"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-gray-300">
+                      Age
+                    </label>
+                    <input
+                      type="number"
+                      name="age"
+                      value={formData.age}
+                      onChange={handleInputChange}
+                      min="4"
+                      max="100"
+                      className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
+                      placeholder="Enter age"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-gray-300">
+                      Preferred Branch *
+                    </label>
+                    <select 
+                      name="branch"
+                      value={formData.branch}
+                      onChange={handleInputChange}
+                      className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white transition-colors focus:border-cyan-400 focus:outline-none"
+                    >
+                      <option value="Kalamboli">Kalamboli (Main Branch)</option>
+                      <option value="Kamothe">Kamothe</option>
+                      <option value="Roadpali">Roadpali</option>
                     </select>
                   </div>
                   <div>
                     <label className="mb-2 block text-gray-300">
-                      Preferred Program
+                      Current Chess Experience
                     </label>
-                    <select className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white transition-colors focus:border-cyan-400 focus:outline-none">
-                      <option value="">Select a program</option>
-                      <option value="foundation">Foundation Program</option>
-                      <option value="tactical">Tactical Mastery</option>
-                      <option value="elite">Elite Training</option>
-                      <option value="professional">Professional Track</option>
-                      <option value="private">Private Coaching</option>
+                    <select 
+                      name="experience"
+                      value={formData.experience}
+                      onChange={handleInputChange}
+                      className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white transition-colors focus:border-cyan-400 focus:outline-none"
+                    >
+                      <option value="Beginner">Beginner</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Advanced">Advanced</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-gray-300">
+                    Preferred Program
+                  </label>
+                  <select 
+                    name="preferredProgram"
+                    value={formData.preferredProgram}
+                    onChange={handleInputChange}
+                    className="w-full rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white transition-colors focus:border-cyan-400 focus:outline-none"
+                  >
+                    <option value="">Select a program</option>
+                    <option value="foundation">Foundation Program</option>
+                    <option value="tactical">Tactical Mastery</option>
+                    <option value="elite">Elite Training</option>
+                    <option value="professional">Professional Track</option>
+                    <option value="private">Private Coaching</option>
+                  </select>
                 </div>
 
                 <div>
@@ -165,16 +296,22 @@ const Contact = () => {
                     Chess Goals & Experience
                   </label>
                   <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
                     rows="4"
                     className="w-full resize-none rounded-lg border border-gray-500/30 bg-gray-900/50 px-4 py-3 text-white placeholder-gray-400 transition-colors focus:border-cyan-400 focus:outline-none"
                     placeholder="Tell us about your chess background, goals, and what you hope to achieve..."
-                  ></textarea>
+                  />
                 </div>
 
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
+                    name="newsletter"
                     id="newsletter"
+                    checked={formData.newsletter}
+                    onChange={handleInputChange}
                     className="mt-1 h-4 w-4 rounded border-gray-500 bg-gray-900 text-cyan-400 focus:ring-cyan-400"
                   />
                   <label htmlFor="newsletter" className="text-sm text-gray-300">
@@ -185,9 +322,10 @@ const Contact = () => {
 
                 <button
                   type="submit"
-                  className="hover-glow animate-pulse-glow w-full transform rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105"
+                  disabled={isSubmitting}
+                  className="hover-glow animate-pulse-glow w-full transform rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Enrollment Application
+                  {isSubmitting ? 'Submitting...' : 'Submit Enrollment Application'}
                 </button>
               </form>
             </div>
