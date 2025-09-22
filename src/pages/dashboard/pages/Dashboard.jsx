@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../../utils/api'
 import { Users, Trophy, Calendar, TrendingUp, Plus, Eye } from 'lucide-react'
-import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
+import { isValidImageUrl } from '../../../utils/imageUtils'
 
 const Dashboard = () => {
     const [stats, setStats] = useState({

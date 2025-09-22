@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, Trophy, Users, Clock, ExternalLink, Star, Award, X, Grid, List, Eye } from 'lucide-react'
 import api from '../../../utils/api'
-import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
+import { isValidImageUrl } from '../../../utils/imageUtils'
 
 const Tournaments = () => {
   const [upcomingTournaments, setUpcomingTournaments] = useState([])

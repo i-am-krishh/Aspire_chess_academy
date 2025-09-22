@@ -11,7 +11,7 @@ import {
   Target,
 } from "lucide-react";
 import api from "../../../utils/api";
-import { isValidImageUrl } from "../../../utils/imageUtils.jsx";
+import { isValidImageUrl } from "../../../utils/imageUtils";
 
 const Students = () => {
   const [students, setStudents] = useState([]);

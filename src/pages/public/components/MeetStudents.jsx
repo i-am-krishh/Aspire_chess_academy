@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { GraduationCap, Star, Trophy, Eye, Users } from "lucide-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { isValidImageUrl } from "../../../utils/imageUtils.jsx";
+import { isValidImageUrl } from "../../../utils/imageUtils";
 
 const MeetStudents = ({ setCurrentPage }) => {
   const [featuredStudents, setFeaturedStudents] = useState([]);

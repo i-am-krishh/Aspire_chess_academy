@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
+import api from '../../../utils/api'
 import toast from 'react-hot-toast'
 import {
   Plus,
@@ -15,7 +15,7 @@ import {
   Camera
 } from 'lucide-react'
 import CropModal from '../../../components/CropModal'
-import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
+import { isValidImageUrl } from '../../../utils/imageUtils'
 
 const Students = () => {
   const [students, setStudents] = useState([])
@@ -59,7 +59,7 @@ const Students = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('/api/students/admin', {
+      const response = await api.get('/api/students/admin', {
         params: {
           search: searchTerm,
           status: statusFilter,
@@ -101,12 +101,12 @@ const Students = () => {
       }
 
       if (editingStudent) {
-        await axios.put(`/api/students/${editingStudent._id}`, formData, {
+        await api.put(`/api/students/${editingStudent._id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         toast.success('Student updated successfully!')
       } else {
-        await axios.post('/api/students', formData, {
+        await api.post('/api/students', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })
         toast.success('Student created successfully!')
@@ -161,7 +161,7 @@ const Students = () => {
     if (!confirm('Are you sure you want to delete this student?')) return
 
     try {
-      await axios.delete(`/api/students/${id}`)
+      await api.delete(`/api/students/${id}`)
       toast.success('Student deleted successfully!')
       fetchStudents()
     } catch (error) {
@@ -171,7 +171,7 @@ const Students = () => {
 
   const toggleStatus = async (id) => {
     try {
-      await axios.patch(`/api/students/${id}/toggle-status`)
+      await api.patch(`/api/students/${id}/toggle-status`)
       toast.success('Student status updated!')
       fetchStudents()
     } catch (error) {

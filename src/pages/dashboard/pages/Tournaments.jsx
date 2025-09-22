@@ -22,7 +22,7 @@ import {
   Camera
 } from 'lucide-react'
 import CropModal from '../../../components/CropModal'
-import { isValidImageUrl } from '../../../utils/imageUtils.jsx'
+import { isValidImageUrl } from '../../../utils/imageUtils'
 
 const Tournaments = () => {
   const [tournaments, setTournaments] = useState([])
