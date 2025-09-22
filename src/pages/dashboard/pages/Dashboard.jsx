@@ -239,7 +239,7 @@ const Dashboard = () => {
                     </Link>
 
                     <a
-                        href="http://localhost:5173"
+                        href="https://aspire-chess-academy.vercel.app/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
