@@ -232,7 +232,7 @@ const Students = () => {
 
                   {/* Testimonial */}
                   <div className="mb-4">
-                    <p className="line-clamp-3 text-sm leading-relaxed text-gray-300 italic">
+                    <p className="line-clamp-3 text-sm leading-relaxed text-gray-300 italic text-center">
                       "{student.testimonial}"
                     </p>
                   </div>
