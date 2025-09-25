@@ -140,6 +140,7 @@ const Students = () => {
       title: student.title,
       rating: student.rating,
       peakRating: student.peakRating,
+      fideId: student.fideId || '',
       program: student.program,
       achievements: student.achievements.join('\n'),
       joinDate: student.joinDate,
@@ -240,6 +241,7 @@ const Students = () => {
       title: '',
       rating: '',
       peakRating: '',
+      fideId: '',
       program: '',
       achievements: '',
       joinDate: '',
@@ -414,6 +416,26 @@ const Students = () => {
                     />
                     {errors.peakRating && (
                       <p className="text-red-500 text-sm mt-1">{errors.peakRating.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      FIDE ID (Optional)
+                    </label>
+                    <input
+                      {...register('fideId', { 
+                        pattern: {
+                          value: /^[0-9]{8}$/,
+                          message: 'FIDE ID must be exactly 8 digits'
+                        }
+                      })}
+                      className="input-field"
+                      placeholder="e.g., 12345678"
+                      maxLength="8"
+                    />
+                    {errors.fideId && (
+                      <p className="text-red-500 text-sm mt-1">{errors.fideId.message}</p>
                     )}
                   </div>
 

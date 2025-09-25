@@ -76,6 +76,12 @@ const StudentCard = ({
                   <Trophy className="h-4 w-4 mr-1" />
                   Peak: {student.peakRating}
                 </div>
+                {student.fideId && (
+                  <div className="flex items-center">
+                    <Trophy className="h-4 w-4 mr-1" />
+                    FIDE ID: {student.fideId}
+                  </div>
+                )}
                 <div className="flex items-center">
                   <Calendar className="h-4 w-4 mr-1" />
                   Joined: {student.joinDate}
@@ -186,6 +192,7 @@ const StudentCard = ({
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs md:text-sm text-gray-500 mb-3">
               <span>Rating: {student.rating}</span>
               <span>Peak: {student.peakRating}</span>
+              {student.fideId && <span>FIDE ID: {student.fideId}</span>}
               <span>Joined: {student.joinDate}</span>
             </div>
 

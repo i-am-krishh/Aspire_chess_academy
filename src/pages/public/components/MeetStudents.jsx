@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { GraduationCap, Star, Trophy, Eye, Users } from "lucide-react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { isValidImageUrl } from "../../../utils/imageUtils";
+import api from "../../../utils/api";
 
 const MeetStudents = ({ setCurrentPage }) => {
   const [featuredStudents, setFeaturedStudents] = useState([]);
@@ -15,14 +15,27 @@ const MeetStudents = ({ setCurrentPage }) => {
     const fetchStudents = async () => {
       try {
         console.log("MeetStudents: Fetching students from API...");
-        const response = await axios.get("/api/students");
+        const response = await api.get("/api/students");
         console.log("MeetStudents: API response:", response.data);
+        
+        // Check if response has the expected structure
+        if (!response.data || !response.data.success || !Array.isArray(response.data.data)) {
+          throw new Error('Invalid API response structure');
+        }
+        
         const students = response.data.data;
         console.log("MeetStudents: Students data:", students);
 
+        // Check if students array is valid
+        if (!students || students.length === 0) {
+          console.log("MeetStudents: No students found in database");
+          setFeaturedStudents([]);
+          return;
+        }
+
         // Prioritize featured students, then take first 3
-        const featuredStudents = students.filter((student) => student.featured);
-        const regularStudents = students.filter((student) => !student.featured);
+        const featuredStudents = students.filter((student) => student && student.featured);
+        const regularStudents = students.filter((student) => student && !student.featured);
         const selectedStudents = [
           ...featuredStudents,
           ...regularStudents,
@@ -30,11 +43,11 @@ const MeetStudents = ({ setCurrentPage }) => {
         console.log("MeetStudents: Selected students:", selectedStudents);
 
         const featured = selectedStudents.map((student, index) => ({
-          name: student.name,
-          title: student.title,
-          program: student.program,
-          rating: student.rating,
-          achievements: student.achievements[0] || "Academy Graduate",
+          name: student.name || 'Unknown Student',
+          title: student.title || 'Student',
+          program: student.program || 'Academy Student',
+          rating: student.rating || '1200',
+          achievements: (student.achievements && student.achievements[0]) || "Academy Graduate",
           image: student.image || getDefaultImage(index),
           icon: getIconForIndex(index),
           color: getColorForIndex(index),
@@ -45,9 +58,9 @@ const MeetStudents = ({ setCurrentPage }) => {
       } catch (error) {
         console.error("MeetStudents: Error fetching students:", error);
         console.error("MeetStudents: Error details:", error.response?.data);
-        // Fallback to static data if API fails
-        console.log("MeetStudents: Using fallback data");
-        setFeaturedStudents(getFallbackStudents());
+        // Set empty array if API fails - only show database values
+        console.log("MeetStudents: API failed, showing empty state");
+        setFeaturedStudents([]);
       } finally {
         setLoading(false);
       }
@@ -75,38 +88,7 @@ const MeetStudents = ({ setCurrentPage }) => {
     return colors[index % colors.length];
   };
 
-  const getFallbackStudents = () => [
-    {
-      name: "David Rodriguez",
-      title: "FIDE Master",
-      program: "Elite Training Graduate",
-      rating: "2380",
-      achievements: "Gained 400 rating points in 18 months",
-      image: "👨‍🎓",
-      icon: Trophy,
-      color: "from-yellow-500 to-orange-600",
-    },
-    {
-      name: "Emma Thompson",
-      title: "National Champion",
-      program: "Tactical Mastery Graduate",
-      rating: "2150",
-      achievements: "Won National Championship",
-      image: "👩‍🎓",
-      icon: Star,
-      color: "from-cyan-500 to-blue-600",
-    },
-    {
-      name: "Alex Kim",
-      title: "Candidate Master",
-      program: "Foundation to Elite Journey",
-      rating: "2050",
-      achievements: "0 to 2050 rating in 2 years",
-      image: "👨‍💼",
-      icon: GraduationCap,
-      color: "from-purple-500 to-pink-600",
-    },
-  ];
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -142,6 +124,28 @@ const MeetStudents = ({ setCurrentPage }) => {
             </h2>
             <div className="flex items-center justify-center">
               <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-purple-400"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Show empty state if no students from database
+  if (!featuredStudents || featuredStudents.length === 0) {
+    return (
+      <section className="relative overflow-hidden bg-gray-900/30 px-4 py-20">
+        <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="mb-16 text-center">
+            <h2 className="font-orbitron mb-6 text-4xl font-bold text-white md:text-5xl">
+              MEET OUR <span className="text-purple-400">STUDENTS</span>
+            </h2>
+            <p className="mx-auto mb-4 max-w-3xl text-xl text-gray-300">
+              We're currently updating our student showcase. Check back soon to see amazing student achievements!
+            </p>
+            <div className="flex items-center justify-center text-gray-400">
+              <Users className="mr-2 h-8 w-8" />
+              <span className="text-lg">No students to display at the moment</span>
             </div>
           </div>
         </div>

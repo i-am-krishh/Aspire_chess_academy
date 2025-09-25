@@ -198,7 +198,7 @@ const Students = () => {
                   </div>
 
                   {/* Ratings */}
-                  <div className="mb-4 grid grid-cols-2 gap-3">
+                  <div className={`mb-4 grid gap-3 ${student.fideId ? 'grid-cols-3' : 'grid-cols-2'}`}>
                     <div className="text-center">
                       <div className="mb-1 text-xs text-gray-400">Current</div>
                       <div className="text-sm font-bold text-cyan-400">
@@ -211,6 +211,14 @@ const Students = () => {
                         {student.peakRating}
                       </div>
                     </div>
+                    {student.fideId && (
+                      <div className="text-center">
+                        <div className="mb-1 text-xs text-gray-400">FIDE ID</div>
+                        <div className="text-sm font-bold text-yellow-400">
+                          {student.fideId}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Program */}
