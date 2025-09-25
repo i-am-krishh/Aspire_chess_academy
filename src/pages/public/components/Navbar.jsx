@@ -59,15 +59,11 @@ const Navbar = () => {
                 <img 
                   src={Logo} 
                   alt="Aspire Chess Academy Logo" 
-                  className="w-8 h-8 mr-3 object-contain"
+                  className="w-24 h-14 mr-3 object-contain"
                 />
-                <div className="text-2xl font-orbitron font-bold text-cyan-400 text-glow">
-                  Aspire
-                </div>
+               
               </motion.div>
-              <div className="ml-2 text-sm text-gray-300 group-hover:text-cyan-400 transition-colors mt-1.5">
-                Chess Academy
-              </div>
+              
             </Link>
           </motion.div>
 
