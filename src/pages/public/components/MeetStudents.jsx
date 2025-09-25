@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, Star, Trophy, Eye, Users } from "lucide-react";
+import { GraduationCap, Star, Trophy, Eye, Users, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { isValidImageUrl } from "../../../utils/imageUtils";
 import api from "../../../utils/api";
@@ -47,7 +47,11 @@ const MeetStudents = ({ setCurrentPage }) => {
           title: student.title || 'Student',
           program: student.program || 'Academy Student',
           rating: student.rating || '1200',
+          peakRating: student.peakRating || student.rating || '1200',
+          fideId: student.fideId || null,
           achievements: (student.achievements && student.achievements[0]) || "Academy Graduate",
+          testimonial: student.testimonial || null,
+          joinDate: student.joinDate || null,
           image: student.image || getDefaultImage(index),
           icon: getIconForIndex(index),
           color: getColorForIndex(index),
@@ -213,46 +217,41 @@ const MeetStudents = ({ setCurrentPage }) => {
 
         {/* Students Grid */}
         <motion.div
-          className="mb-12 grid gap-8 md:grid-cols-3"
+          className="mb-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
           {featuredStudents.map((student, index) => {
-            const IconComponent = student.icon;
+            const getTitleColor = (title) => {
+              if (title.includes("FIDE Master")) return "text-yellow-400";
+              if (title.includes("National Champion")) return "text-cyan-400";
+              if (title.includes("WIM")) return "text-purple-400";
+              if (title.includes("Candidate Master")) return "text-green-400";
+              return "text-gray-400";
+            };
+
+            const getTitleBorder = (title) => {
+              if (title.includes("FIDE Master")) return "border-yellow-500/30";
+              if (title.includes("National Champion")) return "border-cyan-500/30";
+              if (title.includes("WIM")) return "border-purple-500/30";
+              if (title.includes("Candidate Master")) return "border-green-500/30";
+              return "border-gray-500/30";
+            };
+
             return (
               <motion.div
                 key={index}
-                className="hover-glow group relative cursor-pointer overflow-hidden rounded-xl border border-purple-500/30 bg-black/50 p-6 backdrop-blur-sm"
+                className={`border bg-black/50 backdrop-blur-sm ${getTitleBorder(student.title)} hover-glow group rounded-xl p-6`}
                 variants={itemVariants}
-                whileHover={{
-                  scale: 1.05,
-                  rotateY: 5,
-                  boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)",
-                }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.02 }}
               >
-                {/* Background Gradient */}
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${student.color} opacity-0 transition-opacity duration-300 group-hover:opacity-10`}
-                  initial={{ scale: 0, rotate: 45 }}
-                  whileHover={{ scale: 1.5, rotate: 0 }}
-                />
-
-                {/* Student Avatar */}
-                <div className="relative mb-6 text-center">
+                {/* Student Header */}
+                <div className="mb-4 flex flex-col items-center text-center">
                   <motion.div
-                    className="relative mx-auto mb-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-gray-700"
-                    animate={{
-                      rotate: [0, 5, -5, 0],
-                      scale: [1, 1.1, 1],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      delay: index * 0.5,
-                    }}
+                    className="mb-3 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-700"
+                    whileHover={{ scale: 1.1 }}
                   >
                     {student.image && isValidImageUrl(student.image) ? (
                       <img
@@ -261,81 +260,93 @@ const MeetStudents = ({ setCurrentPage }) => {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="text-4xl text-gray-400">👤</div>
+                      <div className="text-2xl text-gray-400">👤</div>
                     )}
-                    <motion.div
-                      className="absolute -top-2 -right-2 text-purple-400"
-                      whileHover={{ rotate: 360, scale: 1.2 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <IconComponent className="h-6 w-6" />
-                    </motion.div>
                   </motion.div>
-
-                  <h3 className="font-orbitron mb-1 text-xl font-bold text-white">
+                  <h3 className="font-orbitron mb-1 text-lg font-bold text-white">
                     {student.name}
                   </h3>
-                  <motion.p
-                    className="mb-2 flex items-center justify-center font-semibold text-purple-400"
-                    whileHover={{ scale: 1.05 }}
+                  <p
+                    className={`${getTitleColor(student.title)} flex items-center justify-center text-sm font-semibold`}
                   >
-                    <GraduationCap className="mr-1 h-4 w-4" />
+                    <GraduationCap className="mr-1 h-3 w-3" />
                     {student.title}
-                  </motion.p>
-                  <p className="text-sm text-gray-300">{student.program}</p>
+                  </p>
                 </div>
 
-                {/* Stats */}
-                <div className="mb-6 space-y-3">
-                  <motion.div
-                    className="flex items-center justify-between rounded-lg bg-gray-800/30 p-2"
-                    whileHover={{ backgroundColor: "rgba(0, 212, 255, 0.1)" }}
-                  >
-                    <span className="flex items-center text-gray-400">
-                      <Star className="mr-1 h-4 w-4" />
-                      Rating:
-                    </span>
-                    <motion.span
-                      className="font-bold text-cyan-400"
-                      animate={{
-                        textShadow: [
-                          "0 0 5px #00d4ff",
-                          "0 0 10px #00d4ff",
-                          "0 0 5px #00d4ff",
-                        ],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: index * 0.3,
-                      }}
-                    >
+                {/* Ratings */}
+                <div className={`mb-4 grid gap-3 ${student.fideId ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                  <div className="text-center">
+                    <div className="mb-1 text-xs text-gray-400">Current</div>
+                    <div className="text-sm font-bold text-cyan-400">
                       {student.rating}
-                    </motion.span>
-                  </motion.div>
-                  <div className="rounded-lg bg-purple-500/10 p-2 text-center">
-                    <div className="mb-1 flex items-center justify-center text-sm text-gray-400">
-                      <Trophy className="mr-1 h-3 w-3" />
-                      Achievement:
                     </div>
-                    <div className="text-sm font-semibold text-purple-400">
-                      {student.achievements}
+                  </div>
+                  <div className="text-center">
+                    <div className="mb-1 text-xs text-gray-400">Peak</div>
+                    <div className="text-sm font-bold text-purple-400">
+                      {student.peakRating}
+                    </div>
+                  </div>
+                  {student.fideId && (
+                    <div className="text-center">
+                      <div className="mb-1 text-xs text-gray-400">FIDE ID</div>
+                      <div className="text-sm font-bold text-yellow-400">
+                        {student.fideId}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Program */}
+                <div className="mb-4">
+                  <div className="rounded-lg border border-cyan-400/50 bg-gradient-to-r from-cyan-500/20 to-purple-600/20 px-3 py-2 text-center">
+                    <div className="text-xs font-semibold text-cyan-400">
+                      {student.program}
                     </div>
                   </div>
                 </div>
 
-                {/* View Profile Button */}
-                {/* <motion.button 
-                  className="w-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-400 text-purple-400 py-2 rounded-lg font-semibold hover:from-purple-500 hover:to-cyan-500 hover:text-white transition-all duration-300 flex items-center justify-center"
-                  whileHover={{ 
-                    scale: 1.02,
-                    boxShadow: '0 0 20px rgba(139, 92, 246, 0.5)'
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  View Story
-                </motion.button> */}
+                {/* Testimonial */}
+                {student.testimonial && (
+                  <div className="mb-4">
+                    <p className="line-clamp-3 text-sm leading-relaxed text-gray-300 italic text-center">
+                      "{student.testimonial}"
+                    </p>
+                  </div>
+                )}
+
+                {/* Key Achievement */}
+                <div className="mb-4">
+                  <h4 className="font-orbitron mb-2 flex items-center justify-center text-sm font-bold text-white">
+                    <Trophy className="mr-1 h-4 w-4 text-yellow-400" />
+                    Top Achievement
+                  </h4>
+                  <div className="rounded-lg bg-gray-800/50 p-2">
+                    <motion.div
+                      className="flex items-start text-xs text-gray-300"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                    >
+                      <Star className="mt-0.5 mr-2 h-3 w-3 flex-shrink-0 text-cyan-400" />
+                      {student.achievements}
+                    </motion.div>
+                  </div>
+                </div>
+
+                {/* Join Date */}
+                {student.joinDate && (
+                  <div className="text-center">
+                    <div className="mb-1 flex items-center justify-center text-xs text-gray-400">
+                      <Calendar className="mr-1 h-3 w-3" />
+                      Joined
+                    </div>
+                    <div className="text-xs font-semibold text-white">
+                      {student.joinDate}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             );
           })}
