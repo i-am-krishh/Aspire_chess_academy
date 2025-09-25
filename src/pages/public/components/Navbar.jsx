@@ -12,6 +12,7 @@ import {
   Zap
 } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
+import Logo from '../../../assets/Logo.png'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -45,18 +46,24 @@ const Navbar = () => {
           >
             <Link to="/" className="flex items-center">
               <motion.div
-                className="text-2xl font-orbitron font-bold text-cyan-400 text-glow flex items-center"
+                className="flex items-center"
                 animate={{
-                  textShadow: [
-                    '0 0 10px #00d4ff',
-                    '0 0 20px #00d4ff',
-                    '0 0 10px #00d4ff'
+                  filter: [
+                    'drop-shadow(0 0 10px rgba(0, 212, 255, 0.5))',
+                    'drop-shadow(0 0 20px rgba(0, 212, 255, 0.8))',
+                    'drop-shadow(0 0 10px rgba(0, 212, 255, 0.5))'
                   ]
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <Crown className="w-6 h-6 mr-2" />
-                Aspire
+                <img 
+                  src={Logo} 
+                  alt="Aspire Chess Academy Logo" 
+                  className="w-8 h-8 mr-3 object-contain"
+                />
+                <div className="text-2xl font-orbitron font-bold text-cyan-400 text-glow">
+                  Aspire
+                </div>
               </motion.div>
               <div className="ml-2 text-sm text-gray-300 group-hover:text-cyan-400 transition-colors mt-1.5">
                 Chess Academy
