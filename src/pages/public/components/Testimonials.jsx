@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Quote, Star, TrendingUp, Trophy, Award, Users } from 'lucide-react'
-import axios from 'axios'
+import api from '../../../utils/api'
 
 const Testimonials = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
@@ -12,27 +12,46 @@ const Testimonials = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('/api/students')
-        const students = response.data.data
+        console.log("Testimonials: Fetching students from API...");
+        const response = await api.get('/api/students')
+        console.log("Testimonials: API response:", response.data);
+        
+        if (!response.data || !response.data.success || !Array.isArray(response.data.data)) {
+          throw new Error('Invalid API response structure');
+        }
+        
+        const students = response.data.data;
 
-        // Transform students data to testimonials format
-        const transformedTestimonials = students.map((student, index) => ({
+        // Filter students who have testimonials and transform to testimonials format
+        const studentsWithTestimonials = students.filter(student => 
+          student && 
+          student.testimonial && 
+          student.testimonial.trim() !== '' &&
+          student.testimonial.trim().toLowerCase() !== 'no testimonial'
+        );
+
+        console.log("Testimonials: Students with testimonials:", studentsWithTestimonials);
+
+        const transformedTestimonials = studentsWithTestimonials.map((student, index) => ({
           name: student.name,
           title: student.title,
           rating: student.rating,
           quote: student.testimonial,
-          achievement: student.achievements[0] || 'Academy Graduate',
+          achievement: student.achievements && student.achievements.length > 0 
+            ? student.achievements[0] 
+            : 'Academy Graduate',
           icon: getIconForIndex(index),
           color: getColorForIndex(index)
-        }))
+        }));
 
-        setTestimonials(transformedTestimonials)
+        setTestimonials(transformedTestimonials);
+        console.log("Testimonials: Final testimonials:", transformedTestimonials);
       } catch (error) {
-        console.error('Error fetching students:', error)
-        // Fallback to static data if API fails
-        setTestimonials(getFallbackTestimonials())
+        console.error('Error fetching students:', error);
+        // No fallback data - show empty state instead
+        setTestimonials([]);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
@@ -54,44 +73,7 @@ const Testimonials = () => {
     return colors[index % colors.length]
   }
 
-  const getFallbackTestimonials = () => [
-    {
-      name: "David Rodriguez",
-      title: "FIDE Master",
-      rating: "2380",
-      quote: "The Aspire Chess Academy transformed my understanding of the game. The personalized coaching and cutting-edge analysis tools helped me achieve my FM title in just 18 months.",
-      achievement: "Gained 400 rating points",
-      icon: TrendingUp,
-      color: "from-green-500 to-emerald-600"
-    },
-    {
-      name: "Emma Thompson",
-      title: "National Champion",
-      rating: "2150",
-      quote: "The tactical training program here is unmatched. My pattern recognition improved dramatically, and I won my first national tournament within a year of joining.",
-      achievement: "Won National Championship",
-      icon: Trophy,
-      color: "from-yellow-500 to-orange-600"
-    },
-    {
-      name: "Alex Kim",
-      title: "Candidate Master",
-      rating: "2050",
-      quote: "From a complete beginner to CM level - the structured curriculum and supportive environment at Aspire made this incredible journey possible.",
-      achievement: "0 to 2050 rating in 2 years",
-      icon: Star,
-      color: "from-blue-500 to-cyan-600"
-    },
-    {
-      name: "Maria Santos",
-      title: "WIM",
-      rating: "2280",
-      quote: "The psychological training component sets Aspire apart. Learning to manage time pressure and maintain focus under stress was game-changing for my tournament performance.",
-      achievement: "Women's International Master",
-      icon: Award,
-      color: "from-purple-500 to-pink-600"
-    }
-  ]
+
 
   const stats = [
     { number: "95%", label: "Rating Improvement", icon: TrendingUp, color: "text-purple-400", border: "border-purple-500/30" },
@@ -131,10 +113,25 @@ const Testimonials = () => {
       <section className="py-20 px-4 relative overflow-hidden">
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="font-orbitron text-4xl md:text-5xl font-bold text-white mb-6">
+            <motion.h2
+              className="font-orbitron text-4xl md:text-5xl font-bold text-white mb-6 flex items-center justify-center"
+              animate={{
+                textShadow: [
+                  '0 0 10px rgba(0, 212, 255, 0.5)',
+                  '0 0 20px rgba(0, 212, 255, 0.8)',
+                  '0 0 10px rgba(0, 212, 255, 0.5)'
+                ]
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              <Users className="w-12 h-12 mr-4 text-cyan-400" />
               SUCCESS <span className="text-cyan-400">STORIES</span>
-            </h2>
-            <p className="text-gray-300">No testimonials available at the moment.</p>
+            </motion.h2>
+            <div className="bg-gradient-to-r from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-500/30 rounded-2xl p-8 md:p-12">
+              <Quote className="w-16 h-16 text-cyan-400 opacity-50 mx-auto mb-6" />
+              <p className="text-xl text-gray-300 mb-4">Our students' success stories are being written.</p>
+              <p className="text-gray-400">Check back soon to read testimonials from our academy graduates!</p>
+            </div>
           </div>
         </div>
       </section>
