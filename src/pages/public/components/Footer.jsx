@@ -22,6 +22,7 @@ const Footer = () => {
     { name: "Tournaments", href: "/tournaments" },
     { name: "Students", href: "/students" },
     { name: "Contact", href: "/contact" },
+    { name: "Login", href: "/dashboard" }
   ];
 
   // const programs = [
